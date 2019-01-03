@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jan  3 14:29:12 2018
+
+@author: oussama
+"""
+
+import cv2
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+img = cv2.imread("test_dog.jpg")
+
+img_rgb = cv2.cvtColor(img, cv2.COLOR_BGRA2RGB)
+
+img1 = img_rgb.copy()
+
+flipped_img = cv2.flip(img1, 0)
+
+pt1 = (200, 380)
+pt2 = (600, 700)
+
+cv2.rectangle(img_rgb, pt1=pt1, pt2=pt2,color=(255,0,0),thickness=10)
+
+vertices = np.array([[250,700], [425,400], [600,700]], np.int32)
+
+pts = vertices.reshape((-1,1,2))
+
+cv2.polylines(img_rgb, [pts],isClosed=True,color=(0,0,255), thickness=20)
+
+plt.imshow(img_rgb)
+
+
+# filled triangle
+img_rgb = cv2.cvtColor(img, cv2.COLOR_BGRA2RGB)
+cv2.fillPoly(img_rgb, [pts],color=(0,0,255))
+plt.imshow(img_rgb)
