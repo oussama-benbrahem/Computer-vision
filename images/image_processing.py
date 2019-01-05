@@ -13,6 +13,8 @@ Created on  Jan  4 10:56:47 2018
 
 import cv2
 import matplotlib.pyplot as plt
+import numpy as np
+
 
 img = cv2.imread('test_dog.jpg')
 
@@ -75,7 +77,7 @@ plt.imshow(img2gray, cmap='gray')
 mask_inv = cv2.bitwise_not(img2gray)
 plt.imshow(mask_inv, cmap='gray')
 
-import numpy as np
+
 white_background = np.full(img2.shape, 255, dtype=np.uint8)
 white_background.shape
 bk = cv2.bitwise_or(white_background, white_background, mask=mask_inv)
@@ -264,10 +266,47 @@ for i, col in enumerate(color):
     
 plt.title('Histogram for blue bricks')
 
+# Histogram equalizations
+
+rainbow = cv2.imread('rainbow.jpg')
+show_rainbow = cv2.cvtColor(rainbow, cv2.COLOR_BGR2RGB)
+
+mask = np.zeros(rainbow.shape[:2], np.uint8)
+plt.imshow(mask, cmap='gray')
+#slicing mask
+mask[300:400,100:400] = 255
+
+masked_img = cv2.bitwise_and(rainbow, rainbow, mask=mask)
+showed_masked_img = cv2.bitwise_and(show_rainbow, show_rainbow,mask=mask)
+
+plt.imshow(showed_masked_img)
+
+hist_mask_values_red = cv2.calcHist([rainbow], channels=[2],mask=mask,histSize=[256],ranges=[0,256])
+
+hist_values_red = cv2.calcHist([rainbow], channels=[2],mask=None,histSize=[256],ranges=[0,256])
+
+plt.plot(hist_mask_values_red)
+plt.title('RED histogram for masked rainbow')
+
+plt.plot(hist_values_red)
+plt.title('RED histogram for normal rainbow')
 
 
+gorilla = cv2.imread('gorilla.jpg',0)
 
+def display(img,cmap=None):
+    fig = plt.figure(figsize=(10,8))
+    ax = fig.add_subplot(111)
+    ax.imshow(img,cmap)
+    
+display(gorilla,cmap='gray')
 
+hist_values = cv2.calcHist([gorilla],channels=[0],mask=None,histSize=[256],ranges=[0,256])
+plt.plot(hist_values)
 
+eq_gorilla = cv2.equalizeHist(gorilla)
 
+display(eq_gorilla,cmap='gray')
+hist_values = cv2.calcHist([eq_gorilla],channels=[0],mask=None,histSize=[256],ranges=[0,256])
+plt.plot(hist_values)
 
